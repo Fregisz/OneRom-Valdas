@@ -4,8 +4,8 @@
 created 0.2 version,
 untested in car
 
-# 2026-10-23 0.1 
-found bug, 
+# 2026-10-23 
+0.1 found bug, 
 working fine 5 minutes, and crash.
 
 # 2026-10-23  
