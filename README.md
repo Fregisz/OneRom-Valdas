@@ -24,8 +24,8 @@ It talks to **TunerPro RT** over USB, so you can change your tune while the engi
 
 ## Install
 
-1. Download `valdas-plugin-trace-v1.0.0.uf2` from the [Releases](../../releases) page.
-2. Put One ROM into boot mode: `<!-- fill in exactly how, e.g. hold the BOOT button while plugging in USB -->`.
+1. Download `valdas-plugin-trace-v0.1.uf2` from the [Releases](../../releases) page.
+2. Put One ROM into boot mode: ` short B and gnd pinds and power up`.
 3. A new drive appears on your PC – this is the One ROM boot folder.
 4. Copy the `.uf2` file into that drive.
 5. The drive disappears by itself when flashing is done and One ROM restarts with Valdas.
