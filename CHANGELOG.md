@@ -1,6 +1,6 @@
 ## Changelog
 
-# 2026-10-26 created 0.2 version,
+# 2026-10-23 created 0.2 version,
 untested in car
 
 # 2026-10-23 0.1 found bug, 
