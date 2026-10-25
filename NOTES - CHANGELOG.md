@@ -1,6 +1,6 @@
 ## Changelog
 ## 2026-10-2 
-creted 0.3 version.
+created 0.3 version.
 one time usb connection crashed, plug and unplug fixed
 
 ## 2026-10-23 
