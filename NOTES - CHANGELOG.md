@@ -1,17 +1,17 @@
 ## Changelog
-# 2026-10-2 
+## 2026-10-2 
 creted 0.3 version.
 one time usb connection crashed, plug and unplug fixed
 
-# 2026-10-23 
+## 2026-10-23 
 created 0.2 version.
 untested in car
 
-# 2026-10-23 
+## 2026-10-23 
 found bug 0.1, 
 working fine 5 minutes, and crash.
 
-# 2026-10-23  
+## 2026-10-23  
 created 0.1 version
 
 First public release.
