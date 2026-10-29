@@ -1,0 +1,100 @@
+HOW TO MAKE A WORKING ADX FILE FOR ANOTHER ECU            (firmware v0.4.4 and later)
+===========================================================================================
+STATUS: written from the firmware source and the Motronic M2.8.1 files. Only the M2.8.1 was ever run
+on a car. The steps for another ECU are NOT tested on hardware.
+
+0. READ THIS FIRST - what an ADX can and cannot show
+-------------------------------------------------------
+The One ROM sits in the EPROM socket. It sees ONLY which addresses the ECU reads. It does NOT see
+sensors (no real throttle, battery voltage ...). So the ADX is not a copy of the ECU's own data list.
+TunerPro always receives the same fixed reply from the One ROM:
+
+   A5 56 01 + 90 payload bytes + 1 checksum byte = 94 bytes
+   (ADX: command A501, packetbodylength 94, packetoffsetinbody 3, packetsize 90, 9600 baud)
+
+Only these payload bytes carry live data (offset = hex "packetoffset" in the ADX):
+
+   0x0A    Tachometer, RPM/25 (measured from crank interrupt reads)  -> needs the crank vector of the new ECU
+   0x3F    RPMAX  rpm axis value of the table row the ECU is reading
+   0x40 MAFAX, 0x41 TPS, 0x42 ECT, 0x43 IAT, 0x44 INJ, 0x45 VBAT, 0x46 LOAD, 0x47 ADV  (axis values)
+   0x48-49 LAMBDA1 (x1000, 16 bit)   0x4A-4B LAMBDA2   0x4C bit0/bit1 = lambda 1/2 valid
+   0x4D    CROW  table row being read      0x4E CCOL  table column being read
+   0x4F    ALIVE packet counter            0x50 status bits (link, found, writing, unsaved, saved, TRACE)
+   0x51-58 ACC uptime s, IPW stack, FTL ring overruns, FTM bad frames (diagnostics)
+
+All other payload bytes are constants from a template and never change.
+So an ADX for another ECU = SAME layout, new names/scales, and a table list made from the other ECU's XDF.
+Never move these offsets by hand: the firmware has them built in (include/ost_adx_layout.h).
+
+1. WHAT YOU NEED
+----------------
+ a) The new ECU's XDF (tables with correct addresses) and its BIN.
+ b) ostrich_firmware.zip unpacked, Docker + compile.bat as for the normal build.
+ c) Python (py) on the PC.
+ d) Motronic_M281_onerom_v3.adx (working template) and 8D_90-91_Corvette.adx (the generator asks for it).
+
+2. EASY PART - only names and scales (no rebuild)
+-------------------------------------------------
+ 1. Copy Motronic_M281_onerom_v3.adx to <ECU name>_onerom.adx (keep the original).
+ 2. Open it in TunerPro RT: Tools -> Data Acquisition Editor (ADX editor).
+ 3. For these items change ONLY title, units and the equation, NOT the packet offset:
+      RPMAX   "X * 40"  -> rpm per axis step of the new ECU (e.g. X * 25)
+      ECT     put the new ECU's code -> degC formula (Motronic: 0.75*code - 48)
+      LAMBDA1 / LAMBDA2 "X / 1000"  keep;   Tachometer (0x0A) "X * 25"  keep
+ 4. Delete gauges you do not use (the Corvette ones only show their minimum).
+ 5. Save, load it in TunerPro (Data Acquisition -> load definition), connect.
+    Check: ALIVE counts up, Lambda shows with the AEM gauge, Tachometer moves with the engine.
+ No firmware rebuild is needed, because no offset changed.
+ If the cursor (CROW/CCOL) or the axis items do not match your tables, do part 3.
+
+3. FULL PART - tables of the new ECU (rebuild needed)
+-----------------------------------------------------
+ 1. Put in one folder: virtual_ostrich.py, onerom_bridge.py, 8D_90-91_Corvette.adx, <new>.xdf, <new>.bin
+ 2. Command Prompt in that folder:
+      py plugins\system\ostrich\tools\gen_firmware_data.py --xdf <new>.xdf --bin <new>.bin --corvette 8D_90-91_Corvette.adx --out-adx <ECU name>_onerom.adx
+    (fix the path to gen_firmware_data.py if yours is elsewhere). It writes THREE things:
+      <ECU name>_onerom.adx      <- load THIS in TunerPro
+      plugins\system\ostrich\include\ost_adx_layout.h
+      plugins\system\ostrich\include\ost_tables.h
+    Report back: the number of tables (OST_NTABLES) and any error text.
+ 3. Which axis item each table drives is guessed from the XDF. Open ost_tables.h; a line is
+      {z address, rows, cols, row-axis address, col-axis address, row item, col item, ...}
+    Item numbers: 0 RPM, 1 MAF, 2 TPS, 3 ECT, 4 IAT, 5 INJ, 6 VBAT, 7 LOAD, 8 ADV, 255 none.
+    If an important table has the wrong item, tell me (or fix it in the file) and rebuild.
+ 4. The generator assumes row-major cells: cell(r,c) = z + r*cols + c. If the cursor jumps wrongly in a
+    big table, that XDF is column-major: tell me the table and I change the generator.
+ 5. Rebuild with compile.bat (new version number), flash the .uf2.
+ 6. Load <ECU name>_onerom.adx and the new XDF in TunerPro.
+
+4. RPM (tachometer) FOR THE NEW ECU
+-----------------------------------
+RPM comes from counting reads of the crank interrupt vector; the address is ECU specific.
+ 1. Record two trace logs at steady known rpm (e.g. idle 900 and ~3000) with eprom_hex_viewer.py.
+ 2. py tools\find_crank_vector.py idle.csv:900 mid.csv:3000
+    It prints the crank vector, the routine and the rpm constant K.
+ 3. Type them in when compile.bat asks ("Crank interrupt vector" / "routine" / RPM constant), rebuild.
+ Without this the Tachometer stays 0; everything else works.
+
+5. EPROM SIZE AND ADDRESSES
+---------------------------
+ - 27C256 (32 KB) ECU: program the One ROM image as 27c256, use a 32 KB bin in TunerPro.
+ - XDF addresses must be chip offsets (0 = first byte of the chip). If the XDF uses CPU addresses with a
+   base (e.g. 0x8000), tell me the base: the generator does not subtract it.
+
+6. TEST CHECKLIST (report back)
+-------------------------------
+ [ ] TunerPro connects, ALIVE counts up.
+ [ ] Read bin from the One ROM = your bin (size and a few bytes).
+ [ ] TRACE on port B, engine idle: addresses appear; CROW/CCOL move inside the expected table.
+ [ ] Tachometer close to the real rpm (after part 4).
+ [ ] AEM lambda: STAT line shows AEM ok=1 ... L1=...
+ Send: ECU part number, chip type, the STAT line, which items failed.
+
+7. COMMON MISTAKES
+------------------
+ - Changing a packet offset in TunerPro: the firmware still fills the old byte, the gauge shows 0.
+ - Wrong packet length: it must stay 94 / offset 3 / size 90.
+ - Editing ost_adx_layout.h by hand: it is generated; run the generator again.
+ - Using the M2.8.1 ost_tables.h with another XDF: the cursor points to the wrong tables.
+ - Coolant (ECT): the real coolant code is known only on the M2.8.1 (sensor table cells E278-E283).
+   On another ECU the ECT item shows the axis value of the table being read, not a measurement.
