@@ -1,8 +1,11 @@
 ## Changelog
 ## 2026-10-26 
 created 0.4 version.
+
 lambda input through max3232 directly to onerom
+
 add filter option to reduce trace buble flickering
+
 onerom ram full
 
 
