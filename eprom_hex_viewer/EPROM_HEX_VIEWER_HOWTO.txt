@@ -1,0 +1,83 @@
+EPROM HEX VIEWER (eprom_hex_viewer.py) - INSTRUCTIONS                    for firmware v0.4.x
+=========================================================================================
+Written from the program source. I could not run the window here, so button names are copied from
+the code; tell me if something looks different.
+
+WHAT IT IS
+  A PC program that shows the 64 KB EPROM space as a hex dump and marks (dots) every address the ECU
+  reads, live, from the One ROM's SECOND USB port ("OneRom-Valdas EPROM log" = port B, for you COM18).
+  It can also record the reads to a CSV file, show your XDF tables on the dump, read TunerPro .xdl
+  logs, set the RPM calibration, and (firmware v0.4.5-relay only) pass the AEM lambda to TunerPro.
+  TunerPro uses the FIRST port ("OneRom-Valdas TunerPro"). Never connect the viewer to that one.
+
+1. ONE-TIME SETUP
+   1. Python 3 on the PC (command  py --version  works).
+   2. py -m pip install pyserial
+   3. Put eprom_hex_viewer.py in its own folder (it makes the folder  eprom_logs  and the files
+      eprom_viewer_config.json and eprom_viewer_error.log NEXT TO ITSELF).
+   4. Start:  py eprom_hex_viewer.py
+
+2. CONNECT TO THE ONE ROM
+   1. ECU powered or One ROM on USB. Row 2: "Port B:" list -> press the round arrow (refresh).
+   2. Choose the line marked "<- One ROM" whose name says "EPROM log" (COM18 for you).
+   3. Press "Connect". Top-right label goes:  grey "not connected" -> yellow "waiting for device"
+      -> GREEN "port B: OK nn frames/s".
+      Red "LINK LOST" = no health frame from the device for 3 s (cable, USB reset). Orange "rate low" =
+      address rate dropped to under half (engine stopped does this too). Events are written to
+      eprom_viewer_error.log.
+   Only ONE program may hold the port: close onerom_stat.py or PuTTY on COM18 first.
+
+3. SEE WHAT THE ECU READS (live)
+   - Bin on screen: "Load BIN" (your T1017.bin) - then the dump shows real bytes.
+   - Tables: "Load XDF Layer" (your .xdf) - the left list "XDF Defined Maps / Tables" shows every table;
+     tables are coloured on the dump.
+   - Dots appear on the addresses being read. Settings for colour/size/symbol: "Dot Settings".
+   - "Show last (s, 0=all)": dots older than N seconds fade out; 0 = keep all. "Live view" on/off.
+   - "Pause": freezes the picture AND stops recording (incoming addresses are ignored). "Resume" to go on.
+   - "Clear": removes the dot overlay (does not touch the recording file).
+   - Click a cell: status bar shows the address. Right click: copy address / byte value /
+     "Select Belonging Map" (jumps to the XDF table the cell belongs to).
+   - "Go to (Hex)" + "Go": jump to an address, e.g. E4E8.
+   - Click a TABLE in the left list while connected: the viewer sends  SEL <address>  to the One ROM, so
+     the TunerPro table cursor (CROW/CCOL) follows that table. Status bar says "Data trace now follows this
+     table" or "the firmware does not trace this table".
+
+4. RECORD A LOG
+   1. Connect (green). 2. Press "Record" - the button turns red and blinks: RECORDING.
+   3. Run the engine / the test. 4. Press "Stop".
+   Files in the eprom_logs folder:
+      eprom_trace_YYYYMMDD_HHMMSS.csv           columns: seq,time,host_s,dev_ms,addr (addr = hex EPROM address)
+      eprom_trace_YYYYMMDD_HHMMSS_summary.csv   one line per address: hits, first/last second, byte in the
+                                                loaded BIN, mapped YES/NO, XDF table name
+   (Load the BIN and the XDF BEFORE recording, or the summary has empty bytes/names.)
+   The line under the toolbar shows:  streaming | REC n lines | unique n | device dropped n, overruns n.
+   "dropped/overruns" > 0 means the One ROM lost addresses (too fast for USB) - keep it low.
+   "Load Log" puts a saved csv/log back on the dump as dots (also accepts logs from older versions).
+   "Save Log" saves what is currently shown.
+
+5. TUNERPRO LOG -> CSV
+   "TunerPro .xdl -> CSV": choose the .xdl made with the One ROM ADX; the csv (semicolon separated) is
+   saved next to it, with RPMAX, MAFAX, TPS, ECT, LAMBDA1_x1000, CROW, CCOL ... A message shows the number
+   of records, length and lambda min/max. Note: the time in it is rebuilt from an 8-bit stamp, so it runs
+   slower than real time (about 1.9x in my last log). Use the trace csv for exact time.
+
+6. RPM CALIBRATION  (button "RPM calibrate...")
+   1. Connect. 2. Hold a steady speed, 2000-3000 rpm, read the real rpm from a tach/scan tool.
+   3. Type it in "Real RPM", press "Calibrate (10 s)", wait 10 s.
+   4. The window shows "RK <number>". The viewer remembers it and sends it at every Connect.
+   5. Type this K into compile.bat ("RPM calibration K") when you build, so it survives a restart.
+   "Show RPM info" prints the current values.
+
+7. AEM LAMBDA THROUGH THE VIEWER  (button "AEM Wideband...")
+   Works ONLY with firmware v0.4.5-relay (v0.4-0.4.4 read AEM on the DIO pin and answer "WB NONE").
+   See AEM_VIEWER_RELAY_HOWTO.txt. Short: tick "Enable wideband", choose the gauge's COM port for
+   Sensor 1 (not COM18), the label shows "AEM on" when it runs.
+
+8. TROUBLESHOOTING
+   - Connect says pyserial missing: py -m pip install pyserial.
+   - Stays yellow "waiting for device": wrong COM (you chose the TunerPro port), another program holds
+     the port, or firmware does not answer TRACE. Close others, pick the other COM.
+   - Green but no dots: the ECU is off / not reading (power it), or "Pause" is on.
+   - "Port B / Connection lost" box: cable or USB drop; Connect again. Check eprom_viewer_error.log.
+   - Dots in odd places for a table: load the right BIN/XDF; the XDF must match the chip.
+   - Send me eprom_viewer_error.log and the _summary.csv when something is strange.
