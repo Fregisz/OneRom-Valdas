@@ -1387,7 +1387,7 @@ class EPROMHexViewer(tk.Tk):
         else:                                           # NONE: this firmware was built with OST_WB=0
             self.wb_enabled = False
             self._wb_stop(send_off=False)
-            self.wb_state = "this firmware has no wideband relay (built with WB=0)"
+            self.wb_state = "this firmware has no viewer relay (v0.4-0.4.4 read AEM on the DIO pin). Use v0.4.5-relay, or the DIO wire"
             self.save_settings()
 
     def set_wideband(self, on):
