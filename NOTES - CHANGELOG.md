@@ -1,11 +1,22 @@
 ## Changelog
-## 2026-10-2 
+## 2026-10-26 
+created 0.4 version.
+lambda input through max3232 directly to onerom
+add filter option to reduce trace buble flickering
+onerom ram full
+
+
+## 2026-10-24 
 created 0.3 version.
+add filter option to reduce trace buble flickering
 one time usb connection crashed, plug and unplug fixed
+
+
 
 ## 2026-10-23 
 created 0.2 version.
 untested in car
+created hex viewer - allow record live what happening in eprom
 
 ## 2026-10-23 
 found bug 0.1, 
