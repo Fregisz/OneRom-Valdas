@@ -42,7 +42,6 @@ Optional: check the download is not damaged by comparing its SHA-256 with `SHA25
 6. Turn on **Emulate** to edit live.
 7. Turn on **Trace** to see which cells the ECU is reading.
 
-`<!-- Add screenshots: docs/images/tunerpro-settings.png -->`
 
 ## Good to know
 
