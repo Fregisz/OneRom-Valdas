@@ -25,6 +25,7 @@ It talks to **TunerPro RT** over USB, so you can change your tune while the engi
 1. Download `valdas-plugin-trace-v*.*.uf2` from the [Releases](../../releases) page.
 2. Put One ROM into boot mode: ` short B (Bootsel) and gnd pinds and power up`.
 <img width="255" height="140" alt="image" src="https://github.com/user-attachments/assets/07740871-6066-4f7a-b4f7-eb0eabd92357" />
+
 3. A new drive appears on your PC – this is the One ROM boot folder.
 4. remove cable from ` short B (Bootsel) and gnd pinds and power up`.
 5. Copy the `.uf2` file into that drive.
@@ -39,6 +40,7 @@ Optional: check the download is not damaged by comparing its SHA-256 with `SHA25
 3. Open TunerPro RT and load your bin and XDF.
 4. **Tools → Preferences → 
 <img width="495" height="269" alt="image" src="https://github.com/user-attachments/assets/ecbbd72f-c0ff-46cc-81b9-a83f9c06e4b5" />
+
 5. **Emulation → Upload bin** to send your tune to One ROM.
 6. Turn on **Emulate** to edit live.
 7. Turn on **Trace** to see which cells the ECU is reading.
