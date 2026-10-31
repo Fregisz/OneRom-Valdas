@@ -41,10 +41,10 @@ Optional: check the download is not damaged by comparing its SHA-256 with `SHA25
 4. **Tools → Preferences → 
 <img width="495" height="269" alt="image" src="https://github.com/user-attachments/assets/ecbbd72f-c0ff-46cc-81b9-a83f9c06e4b5" />
 
-5. **Emulation → Upload bin** to send your tune to One ROM.
-6. **Trace → Upload adx** to live trac work.
-6. Turn on **Emulate** to edit live.
-7. Turn on **Trace** to see which cells the ECU is reading.
+5. Emulation → Upload bin to send your tune to One ROM.
+6. Trace → Upload adx to live tracing work.
+7. Turn on **Emulate** to edit live.
+8. Turn on **Trace** to see which cells the ECU is reading.
 
 
 ## Good to know
