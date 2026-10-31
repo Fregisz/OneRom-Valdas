@@ -1,5 +1,3 @@
-<img width="1515" height="865" alt="image" src="https://github.com/user-attachments/assets/46332311-bf20-4ba0-9efa-98c852cff7c0" /># Valdas – live-tuning plugin for One ROM
-
 Valdas is a free system plugin for [One ROM](https://onerom.org) that turns it into a live-tuning ROM emulator for ECUs.
 It talks to **TunerPro RT** over USB, so you can change your tune while the engine is running and use **Trace** to see which map cells the ECU is reading in real time.
 
@@ -26,7 +24,7 @@ It talks to **TunerPro RT** over USB, so you can change your tune while the engi
 
 1. Download `valdas-plugin-trace-v*.*.uf2` from the [Releases](../../releases) page.
 2. Put One ROM into boot mode: ` short B (Bootsel) and gnd pinds and power up`.
-<img width="1515" height="865" alt="image" src="https://github.com/user-attachments/assets/07740871-6066-4f7a-b4f7-eb0eabd92357" />
+<img width="505" height="288" alt="image" src="https://github.com/user-attachments/assets/07740871-6066-4f7a-b4f7-eb0eabd92357" />
 3. A new drive appears on your PC – this is the One ROM boot folder.
 4. remove cable from ` short B (Bootsel) and gnd pinds and power up`.
 5. Copy the `.uf2` file into that drive.
