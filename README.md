@@ -1,7 +1,7 @@
-Valdas is a free system plugin for [One ROM](https://onerom.org) that turns it into a live-tuning ROM emulator for ECUs.
+ostrich is a free system plugin for [One ROM](https://onerom.org) that turns it into a live-tuning ROM emulator for ECUs.
 It talks to **TunerPro RT** over USB, so you can change your tune while the engine is running and use **Trace** to see which map cells the ECU is reading in real time.
 
-> Valdas is a hobby project. It is shared for free and is **not for sale**.
+> ostrich is a hobby project. It is shared for free and is **not for sale**.
 
 ---
 
@@ -22,14 +22,14 @@ It talks to **TunerPro RT** over USB, so you can change your tune while the engi
 
 ## Install
 
-1. Download `valdas-plugin-trace-v*.*.uf2` from the [Releases](../../releases) page.
+1. Download `ostrich-plugin-trace-v*.*.uf2` from the [Releases](../../releases) page.
 2. Put One ROM into boot mode: ` short B (Bootsel) and gnd pinds and power up`.
 <img width="255" height="140" alt="image" src="https://github.com/user-attachments/assets/07740871-6066-4f7a-b4f7-eb0eabd92357" />
 
 3. A new drive appears on your PC – this is the One ROM boot folder.
 4. remove cable from ` short B (Bootsel) and gnd pinds and power up`.
 5. Copy the `.uf2` file into that drive.
-6. The drive disappears by itself when flashing is done and One ROM restarts with Valdas.
+6. The drive disappears by itself when flashing is done and One ROM restarts with ostrich.
 
 Optional: check the download is not damaged by comparing its SHA-256 with `SHA256SUMS.txt`.
 
@@ -50,7 +50,7 @@ Optional: check the download is not damaged by comparing its SHA-256 with `SHA25
 ## Good to know
 
 - Autosave works for up to **63 changed pages** at a time. If you change more than that in one go, upload the whole bin again.
-- If saved edits don't match the current bin, Valdas ignores them and starts from the uploaded bin.
+- If saved edits don't match the current bin, ostrich ignores them and starts from the uploaded bin.
 - Only one program can read the One ROM USB log at a time.
 
 ## Tested on
@@ -69,7 +69,7 @@ Use at your own risk. A wrong tune can damage an engine. Always check your chang
 
 - Built for and with [One ROM](https://github.com/piersfinlayson/one-rom) by Piers Finlayson (MIT License). Thank you!
 - TunerPro RT by Mark Mansur.
-- Valdas speaks a protocol compatible with the Moates Ostrich so TunerPro RT can talk to it. Valdas is not made by, connected to, or supported by Moates.
+- ostrich speaks a protocol compatible with the Moates Ostrich so TunerPro RT can talk to it. ostrich is not made by, connected to, or supported by Moates.
 - Claude ai, most job i did using it, i am not programer, but it helped to make it
 
 ## License
