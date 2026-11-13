@@ -1,4 +1,9 @@
 ## Changelog
+
+## 2026-11-13
+Created 0.4.9 version.
+Works good, looks like stable version
+
 ## 2026-10-27 
 Created 0.4 version.
 Lambda input through max3232 directly to onerom
